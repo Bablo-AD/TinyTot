@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'post_information.dart';
-
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -128,13 +127,8 @@ class _BookGridState extends State<BookGrid> {
                   final agetag = book["agetag"];
                   final isSelected = cartItems.any((item) => item == name);
 
-                  return Card(elevation: 0,
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(
-                          color: Theme.of(context).colorScheme.outline,
-                        ),
-                        borderRadius: const BorderRadius.all(Radius.circular(12)),
-                      ),
+                  return Card(
+
                       child: ListTile(
                     title: Text(name),
                     subtitle: Text("\₹$price"),
@@ -153,7 +147,7 @@ class _BookGridState extends State<BookGrid> {
                           addToCart(name.toString());
                         }
                       },
-                      icon: Icon(isSelected ? Icons.check_box : Icons.add_box,color: isSelected ? Colors.red : Colors.redAccent,),
+                      icon: Icon(isSelected ? Icons.check : Icons.add,color: isSelected ? Colors.red : Colors.redAccent,),
                     ),
                   ));
                 },
