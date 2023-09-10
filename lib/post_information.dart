@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,17 +15,20 @@ class _UserDataPageState extends State<UserDataPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController addressController = TextEditingController();
   final TextEditingController phoneNumberController = TextEditingController();
-  void loader()async{ final prefs = await SharedPreferences.getInstance();
+  void loader() async {
+    final prefs = await SharedPreferences.getInstance();
     setState(() {
       addressController.text = prefs.getString('address') ?? "";
       phoneNumberController.text = prefs.getString('phonenumber') ?? "";
     });
- }
+  }
+
   @override
   void initState() {
     super.initState();
     loader();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -74,8 +76,8 @@ class _UserDataPageState extends State<UserDataPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () async{
-          if (_formKey.currentState!.validate())  {
+        onPressed: () async {
+          if (_formKey.currentState!.validate()) {
             // Form is valid, process and save user data here
             final address = addressController.text;
             final phoneNumber = phoneNumberController.text;
@@ -88,7 +90,8 @@ class _UserDataPageState extends State<UserDataPage> {
             await FirebaseFirestore.instance.collection('orders').add({
               'address': address,
               'phonenumber': phoneNumber,
-              'cart': widget.cartItems
+              'cart': widget.cartItems,
+              'dispatch': false
               // Add other fields as needed
             });
             // Navigate to the next page or perform other actions
