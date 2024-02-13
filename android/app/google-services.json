@@ -7,14 +7,22 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:485271178666:android:118808b4ff91c6ef622fd3",
+        "mobilesdk_app_id": "1:485271178666:android:801e90feebcf0ddd622fd3",
         "android_client_info": {
-          "package_name": "com.tinytot.tinytot_app"
+          "package_name": "com.example.tinytot_admin"
         }
       },
       "oauth_client": [
         {
-          "client_id": "485271178666-fn7c61um0unqush7u273sp5mjcn3mah5.apps.googleusercontent.com",
+          "client_id": "485271178666-8ejkthkrsbbu37ah2scikjl4ghd3en1r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.tinytot_admin",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "485271178666-2ecau3l17go20g8k8odti9r62mtn12f4.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
@@ -27,8 +35,67 @@
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "485271178666-fn7c61um0unqush7u273sp5mjcn3mah5.apps.googleusercontent.com",
+              "client_id": "485271178666-2ecau3l17go20g8k8odti9r62mtn12f4.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "485271178666-20o46t4b0jr52ggiarj048t8fils1mg1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tinytotAdmin"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:485271178666:android:118808b4ff91c6ef622fd3",
+        "android_client_info": {
+          "package_name": "com.tinytot.tinytot_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "485271178666-7djc6a6efla5hblbs8gj2j7cg81v8nq5.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tinytot.tinytot_app",
+            "certificate_hash": "d2b273ed5a92f9314950058934bacc2e67a85e2a"
+          }
+        },
+        {
+          "client_id": "485271178666-kq1t5dlt1rltu8f7rr7aj905lq0vakgk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.tinytot.tinytot_app",
+            "certificate_hash": "9bbb3186b2189ef16d8f272bdab59362c395cbb4"
+          }
+        },
+        {
+          "client_id": "485271178666-2ecau3l17go20g8k8odti9r62mtn12f4.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAokBlpEd64pPIszR8wQNUwGzRdG-MxOHs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "485271178666-2ecau3l17go20g8k8odti9r62mtn12f4.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "485271178666-20o46t4b0jr52ggiarj048t8fils1mg1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.tinytotAdmin"
+              }
             }
           ]
         }

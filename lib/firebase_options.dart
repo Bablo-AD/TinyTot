@@ -67,6 +67,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '485271178666',
     projectId: 'tinytot-41511',
     storageBucket: 'tinytot-41511.appspot.com',
+    androidClientId: '485271178666-8ejkthkrsbbu37ah2scikjl4ghd3en1r.apps.googleusercontent.com',
     iosClientId: '485271178666-3s0q369ikhieujrc437jo9iuf4m11r5a.apps.googleusercontent.com',
     iosBundleId: 'com.tinytot.tinytotApp',
   );
@@ -77,6 +78,7 @@ class DefaultFirebaseOptions {
     messagingSenderId: '485271178666',
     projectId: 'tinytot-41511',
     storageBucket: 'tinytot-41511.appspot.com',
+    androidClientId: '485271178666-8ejkthkrsbbu37ah2scikjl4ghd3en1r.apps.googleusercontent.com',
     iosClientId: '485271178666-env8eenn783a163hejbgiuvep2demd2d.apps.googleusercontent.com',
     iosBundleId: 'com.tinytot.tinytotApp.RunnerTests',
   );

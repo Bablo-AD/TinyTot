@@ -1,9 +1,8 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'post_information.dart';
+
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
@@ -12,7 +11,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-
   String searchQuery = "";
   @override
   Widget build(BuildContext context) {
@@ -38,13 +36,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ), // Pass the search query here
           Expanded(
-            child: BookGrid(searchQuery: ""), // Pass the search query here
+            child: BookGrid(
+                searchQuery: searchQuery), // Pass the search query here
           ),
         ],
       ),
     );
   }
 }
+
 class BookGrid extends StatefulWidget {
   final String searchQuery;
 
@@ -55,7 +55,6 @@ class BookGrid extends StatefulWidget {
 }
 
 class _BookGridState extends State<BookGrid> {
-  String searchQuery = "";
   int selectedage = 0;
   late SharedPreferences _prefs;
   List<String> cartItems = [];
@@ -77,15 +76,13 @@ class _BookGridState extends State<BookGrid> {
         cartItems.add(product);
         //.setStringList('cartitems', cartItems);
       }
-
     });
   }
 
   void removeFromCart(String product) {
     setState(() {
-
-        cartItems.remove(product);
-       // _prefs.setStringList('cartitems', cartItems);
+      cartItems.remove(product);
+      // _prefs.setStringList('cartitems', cartItems);
     });
   }
 
@@ -95,28 +92,40 @@ class _BookGridState extends State<BookGrid> {
       children: [
         Expanded(
           child: StreamBuilder<QuerySnapshot>(
-            stream: FirebaseFirestore.instance.collection("products").snapshots(),
+            stream:
+                FirebaseFirestore.instance.collection("products").snapshots(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
               }
+              List<dynamic> filteredBooks = [];
 
-              final products = snapshot.data!.docs;
-              final filteredProducts = products
-                  .where((product) => product["agetag"] == selectedage)
-                  .toList();
-              final filteredBooks = filteredProducts
-                  .where(
-                    (book) =>
-                    book["name"].toString().toLowerCase().contains(searchQuery),
-              )
-                  .toList();
+              if (snapshot.hasData && snapshot.data != null) {
+                final products = snapshot.data!.docs;
+                final filteredProducts = products
+                    .where((product) => product["agetag"] == selectedage)
+                    .toList();
+                filteredBooks = filteredProducts
+                    .where(
+                      (book) => book["name"]
+                          .toString()
+                          .toLowerCase()
+                          .contains(widget.searchQuery),
+                    )
+                    .toList();
+              }
 
               if (filteredBooks.isEmpty) {
                 return Center(child: Text("No products available"));
               }
 
-              return ListView.builder(
+              return GridView.builder(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2, // number of items in a row
+                  childAspectRatio: 5 / 5, // ratio of item width to item height
+                  crossAxisSpacing: 10, // spacing between items horizontally
+                  mainAxisSpacing: 10, // spacing between items vertically
+                ),
                 itemCount: filteredBooks.length,
                 itemBuilder: (context, index) {
                   final book = filteredBooks[index];
@@ -125,47 +134,72 @@ class _BookGridState extends State<BookGrid> {
                   final price = book["price"];
                   final type = book["type"];
                   final agetag = book["agetag"];
-                  final isSelected = cartItems.any((item) => item == name);
+                  bool isSelected = cartItems.any((item) => item == name);
 
-                  return Card(
-
-                      child: ListTile(
-                    title: Text(name),
-                    subtitle: Text("\₹$price"),
-                    leading: Image.network(
-                      imageUrl,
-                      height: 100,
-                      width: 100,
-                      fit: BoxFit.cover,
-                    ),
-                    trailing: IconButton(
-                      onPressed: () {
-                        if (isSelected) {
-                          removeFromCart(name.toString());
-
-                        } else {
-                          addToCart(name.toString());
-                        }
+                  return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isSelected =
+                              !isSelected; // toggle the isSelected state
+                          if (isSelected) {
+                            addToCart(name);
+                          } else {
+                            removeFromCart(name);
+                          }
+                        });
                       },
-                      icon: Icon(isSelected ? Icons.check : Icons.add,color: isSelected ? Colors.red : Colors.redAccent,),
-                    ),
-                  ));
+                      child: Card(
+                        color: isSelected
+                            ? Theme.of(context).highlightColor
+                            : null,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            AspectRatio(
+                              aspectRatio: 18.0 / 11.0,
+                              child: Image.network(
+                                imageUrl,
+                                fit: BoxFit.fitWidth,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  EdgeInsets.fromLTRB(10.0, 10.0, 10.0, 0.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: <Widget>[
+                                  Text(
+                                    name,
+                                    style: TextStyle(fontSize: 20),
+                                  ),
+                                  SizedBox(height: 8.0),
+                                  Text("Stock $price"),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ));
                 },
               );
             },
           ),
         ),
         if (cartItems.isNotEmpty)
-          FloatingActionButton.extended(label:Text("Proceed"),
+          FloatingActionButton.extended(
+            label: Text("Proceed"),
             onPressed: () {
               Navigator.of(context).push(
-                MaterialPageRoute(builder: (context) => UserDataPage(cartItems:cartItems,)),
+                MaterialPageRoute(
+                    builder: (context) => UserDataPage(
+                          cartItems: cartItems,
+                        )),
               );
               // Implement logic to proceed with the selected items
             },
             icon: Icon(Icons.shopping_cart),
           ),
-        SizedBox(height:20)
+        SizedBox(height: 20)
       ],
     );
   }
