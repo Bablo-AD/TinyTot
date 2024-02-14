@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:tinytot_app/homepage.dart';
-import 'age_selectionscreen.dart';
 import 'color_schemes.g.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'authentication.dart';
 import 'firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'chooseplan.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -34,7 +35,25 @@ class MyApp extends StatelessWidget {
             if (snapshot.data == null) {
               return LoginSignupPage(); // Show login/signup page
             } else {
-              return HomeScreen(); // Show home page
+              // Fetch user data from Firestore
+              final userDoc = FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(snapshot.data!.uid);
+              return StreamBuilder<DocumentSnapshot>(
+                stream: userDoc.snapshots(),
+                builder: (BuildContext context,
+                    AsyncSnapshot<DocumentSnapshot> userSnapshot) {
+                  if (userSnapshot.connectionState == ConnectionState.active) {
+                    if (userSnapshot.data == null ||
+                        userSnapshot.data!['plan'] == "") {
+                      return ChoosePlanPage(); // Show choose plan page
+                    } else {
+                      return HomeScreen(); // Show home page
+                    }
+                  }
+                  return CircularProgressIndicator(); // Show loading spinner while waiting for user data
+                },
+              );
             }
           }
           return CircularProgressIndicator(); // Show loading spinner while waiting for auth state

@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class SignupPage extends StatefulWidget {
   @override
@@ -8,15 +9,28 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   final _formKey = GlobalKey<FormState>();
   String _email = '';
   String _password = '';
-
   void _signUp() async {
     try {
-      await _auth.createUserWithEmailAndPassword(
-          email: _email, password: _password);
-      // Navigate to home page
+      UserCredential userCredential = await _auth
+          .createUserWithEmailAndPassword(email: _email, password: _password);
+      User? user = userCredential.user;
+
+      if (user != null) {
+        _firestore.collection('users').doc(user.uid).set({
+          'signedUp': true,
+          'email': _email,
+          'address': '',
+          'phonenumber': '',
+          'plan': ''
+          // Add other user data here
+        });
+      }
     } catch (e) {
       print(e);
       // Handle sign-up error

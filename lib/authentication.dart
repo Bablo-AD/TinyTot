@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 import 'package:tinytot_app/signuppage.dart';
-import 'homepage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginSignupPage extends StatefulWidget {
   @override
@@ -12,6 +12,7 @@ class LoginSignupPage extends StatefulWidget {
 
 class _LoginSignupPageState extends State<LoginSignupPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   final _formKey = GlobalKey<FormState>();
   String _email = '';
@@ -19,23 +20,17 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
 
   void _signIn() async {
     try {
-      await _auth.signInWithEmailAndPassword(
+      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
           email: _email, password: _password);
-      // Navigate to home page
+      User? user = userCredential.user;
+      if (user != null) {
+        _firestore.collection('users').doc(user.uid).update({
+          'signedUp': true,
+        });
+      }
     } catch (e) {
       print(e);
       // Handle sign-in error
-    }
-  }
-
-  void _signUp() async {
-    try {
-      await _auth.createUserWithEmailAndPassword(
-          email: _email, password: _password);
-      // Navigate to home page
-    } catch (e) {
-      print(e);
-      // Handle sign-up error
     }
   }
 
@@ -48,7 +43,30 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
       idToken: googleAuth.idToken,
     );
 
-    return await _auth.signInWithCredential(credential);
+    UserCredential userCredential =
+        await _auth.signInWithCredential(credential);
+
+    User? user = userCredential.user;
+
+    if (user != null) {
+      DocumentReference docRef = _firestore.collection('users').doc(user.uid);
+
+      docRef.get().then((doc) {
+        if (!doc.exists) {
+          docRef.set({
+            'signedUp': true,
+            'email': user.email,
+            'address': '',
+            'phonenumber': '',
+            'plan': ''
+            // Add other user data here
+          });
+        } else {
+          docRef.update({'signedUp': false});
+        }
+      });
+    }
+    return userCredential;
   }
 
   @override
@@ -111,17 +129,7 @@ class _LoginSignupPageState extends State<LoginSignupPage> {
               Buttons.Google,
               text: "Continue with Google",
               onPressed: () {
-                signInWithGoogle().then((result) {
-                  if (result != null) {
-                    Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return HomeScreen(); // if login is successful, navigate to Home
-                        },
-                      ),
-                    );
-                  }
-                });
+                signInWithGoogle().then((result) {});
               },
             ),
           ],
